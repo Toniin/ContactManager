@@ -8,11 +8,18 @@ import {ContactModel} from "../Models/contact.model";
   providedIn: 'root'
 })
 export class ContactService {
-  private apiUrl: string = "http://localhost:8080"
+  private apiUrl: string = "http://localhost:8080/api/contacts"
 
   constructor(private http: HttpClient) {}
 
   getContacts(): Observable<ContactModel[]> {
-    return this.http.get<ContactModel[]>(`${this.apiUrl}/api/contacts`)
+    return this.http.get<ContactModel[]>(`${this.apiUrl}`)
+  }
+
+  addNewContact(formData: {
+    name: string;
+    phoneNumber: number;
+  }): Observable<ContactModel> {
+    return this.http.post<ContactModel>(`${this.apiUrl}/add`, formData)
   }
 }
