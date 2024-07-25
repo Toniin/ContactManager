@@ -1,6 +1,10 @@
 .container {
   margin: auto;
+}
+
+.content {
   width: fit-content;
+  margin: auto;
 }
 
 form {

@@ -14,7 +14,7 @@ import {tap} from "rxjs";
     ReactiveFormsModule,
     InputTextModule,
     InputNumberModule,
-    ButtonModule
+    ButtonModule,
   ],
   templateUrl: './add-contact-form.component.html',
   styleUrl: './add-contact-form.component.css'
@@ -41,5 +41,9 @@ export class AddContactFormComponent implements OnInit{
         this.router.navigateByUrl('/contacts')
       )
     ).subscribe()
+  }
+
+  goToBack() {
+    this.router.navigateByUrl('/contacts')
   }
 }
