@@ -6,6 +6,7 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {Router} from "@angular/router";
 import {ContactService} from "../../Services/contact.service";
 import {tap} from "rxjs";
+import {AutoFocusModule} from "primeng/autofocus";
 
 @Component({
   selector: 'app-add-contact-form',
@@ -15,32 +16,68 @@ import {tap} from "rxjs";
     InputTextModule,
     InputNumberModule,
     ButtonModule,
+    AutoFocusModule,
   ],
   templateUrl: './add-contact-form.component.html',
   styleUrl: './add-contact-form.component.css'
 })
-export class AddContactFormComponent implements OnInit{
+export class AddContactFormComponent implements OnInit {
   newContactForm!: FormGroup;
+  isSubmitting = false;
+  inputNameError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
+  inputPhoneNumberError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
+  isLoading = true;
 
   constructor(private formBuilder: FormBuilder,
               private contactService: ContactService,
-              private router: Router) {}
+              private router: Router) {
+  }
 
   ngOnInit() {
     this.newContactForm = this.formBuilder.group({
       name: [null, Validators.required],
       phoneNumber: [null, Validators.required],
-    }, {
-      updateOn: 'blur'
     })
   }
 
   onSubmit() {
-    this.contactService.addNewContact(this.newContactForm.value).pipe(
-      tap(() =>
-        this.router.navigateByUrl('/contacts')
-      )
-    ).subscribe()
+    const nameInput = document.querySelector('#name')
+    const phoneNumberInput = document.querySelector('#phoneNumber')
+
+    if (this.newContactForm.value.name === null || this.newContactForm.value.name.length === 0) {
+      nameInput!.classList.add("ng-invalid", "ng-dirty")
+      this.inputNameError = {
+        isError: true,
+        errorMessage: "Please enter name"
+      }
+    } else {
+      this.inputNameError = {
+        isError: false,
+        errorMessage: ""
+      }
+    }
+
+    if (this.newContactForm.value.phoneNumber === null || this.newContactForm.value.phoneNumber.length === 0) {
+      phoneNumberInput!.classList.add("ng-invalid", "ng-dirty")
+      this.inputPhoneNumberError = {
+        isError: true,
+        errorMessage: "Please enter phone number"
+      }
+    } else {
+      this.inputPhoneNumberError = {
+        isError: false,
+        errorMessage: ""
+      }
+    }
+
+    if (this.newContactForm.valid) {
+      this.isSubmitting = true;
+      this.contactService.addNewContact(this.newContactForm.value).pipe(
+        tap(() =>
+          this.router.navigateByUrl('/contacts')
+        )
+      ).subscribe()
+    }
   }
 
   goToBack() {

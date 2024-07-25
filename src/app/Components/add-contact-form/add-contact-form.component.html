@@ -6,16 +6,21 @@
     <form [formGroup]="newContactForm" (keydown.enter)="onSubmit()">
       <div class="form-input">
         <label for="name">Name</label>
-        <input id="name" type="text" pInputText formControlName="name"/>
+        <input id="name" type="text" pInputText pAutoFocus [autofocus]="true" formControlName="name"/>
+          @if (inputNameError.isError) {
+            <p class="error-message">{{ inputNameError.errorMessage }}</p>
+          }
       </div>
 
       <div class="form-input">
         <label for="phoneNumber">Phone number</label>
-        <p-inputNumber id="phoneNumber" type="number" inputId="withoutgrouping" [useGrouping]="false"
-                       formControlName="phoneNumber"/>
+        <p-inputNumber id="phoneNumber" type="number" inputId="withoutgrouping" [useGrouping]="false" formControlName="phoneNumber"/>
+        @if (inputPhoneNumberError.isError) {
+        <p class="error-message">{{ inputPhoneNumberError.errorMessage }}</p>
+        }
       </div>
 
-      <p-button label="Add contact" [text]="true" [raised]="true" aria-label="Submit" (onClick)="onSubmit()"/>
+      <p-button label="Add contact" [raised]="true" aria-label="Submit" (onClick)="onSubmit()" [disabled]="isSubmitting" [loading]="isSubmitting"/>
     </form>
   </div>
 </div>
