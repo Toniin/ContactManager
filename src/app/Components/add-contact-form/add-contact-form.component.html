@@ -1,0 +1,21 @@
+<div class="container">
+  <p-button label="Return" icon="pi pi-chevron-left" size="small" [text]="true" [raised]="true" severity="secondary" (onClick)="goToBack()"/>
+  <div class="content">
+    <h2>Add new conact</h2>
+
+    <form [formGroup]="newContactForm" (keydown.enter)="onSubmit()">
+      <div class="form-input">
+        <label for="name">Name</label>
+        <input id="name" type="text" pInputText formControlName="name"/>
+      </div>
+
+      <div class="form-input">
+        <label for="phoneNumber">Phone number</label>
+        <p-inputNumber id="phoneNumber" type="number" inputId="withoutgrouping" [useGrouping]="false"
+                       formControlName="phoneNumber"/>
+      </div>
+
+      <p-button label="Add contact" [text]="true" [raised]="true" aria-label="Submit" (onClick)="onSubmit()"/>
+    </form>
+  </div>
+</div>
