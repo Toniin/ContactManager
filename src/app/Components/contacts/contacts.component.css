@@ -3,3 +3,27 @@
   bottom: 20px;
   right: 25%;
 }
+
+#th-actions {
+  width: 5rem;
+}
+
+.confirm-dialog {
+  background-color: white;
+  border-radius: 5px;
+  padding: 2rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.confirm-dialog-icon {
+  display: flex;
+  justify-content: center;
+  color: red;
+  font-size: 2rem;
+}
+
+.confirm-dialog-buttons {
+  display: flex;
+  margin-top: 2rem;
+  justify-content: space-around;
+}
