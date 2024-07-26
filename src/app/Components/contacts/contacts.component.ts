@@ -63,7 +63,7 @@ export class ContactsComponent implements OnInit {
   }
 
   goToAddContact(): void {
-    this.router.navigateByUrl('/contact/add');
+    this.router.navigateByUrl('/contacts/add');
   }
 
   removeContact(phoneNumber: number) {
