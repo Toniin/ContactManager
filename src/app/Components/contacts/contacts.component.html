@@ -1,22 +1,50 @@
 <div class="container">
 
   @if (contactFound && !isReset) {
-    <p-button class="button-refresh" label="Reset" icon="pi pi-refresh" size="small" [text]="true" [raised]="true" severity="secondary" (onClick)="resetContactFound()"/>
+    <p-button class="button-refresh" label="Reset" icon="pi pi-refresh" size="small" [text]="true" [raised]="true"
+              severity="secondary" (onClick)="resetContactFound()"/>
 
     <p-table class="table" [value]="[{}]" [tableStyle]="{ 'min-width': '50rem' }">
       <ng-template pTemplate="header">
         <tr>
           <th>Phone number</th>
           <th>Name</th>
-          <th></th>
+          <th class="th-actions"></th>
+          <th class="th-actions"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body">
         <tr>
-          <td>{{ contactFound.phoneNumber }}</td>
-          <td>{{ contactFound.name }}</td>
+          <td class="td-phone">{{ contactFound.phoneNumber }}</td>
+
+          @if (isEditingContact.isEditing && contactFound.phoneNumber === isEditingContact.phoneNumber) {
+            <td>
+              <form class="form-edit-contact" [formGroup]="editContactForm" (keydown.enter)="onEditContactSubmit(contactFound)">
+                <label for="contactFoundName" hidden="hidden">Name</label>
+                <p-inputGroup class="input-with-button">
+                  <input id="contactFoundName" type="text" pInputText pAutoFocus [autofocus]="true" formControlName="name"/>
+                  <button label="Save" type="button" pButton class="p-button" aria-label="Submit"
+                          (click)="onEditContactSubmit(contactFound)" [disabled]="isSubmitting" [loading]="isSubmitting"></button>
+                </p-inputGroup>
+              </form>
+            </td>
+            <td>
+              <p-button icon="pi pi-times" [rounded]="true" [text]="true" [outlined]="true" [raised]="true"
+                        severity="secondary"
+                        (onClick)="cancelEditing()"/>
+            </td>
+          } @else {
+            <td>{{ contactFound.name }}</td>
+            <td>
+              <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [outlined]="true" [raised]="true"
+                        severity="secondary"
+                        (onClick)="editContact(contactFound)"/>
+            </td>
+          }
+
           <td>
-            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" [outlined]="true" [raised]="true" severity="danger"
+            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" [outlined]="true" [raised]="true"
+                      severity="danger"
                       (onClick)="removeContact(contactFound.phoneNumber)"/>
           </td>
         </tr>
@@ -30,15 +58,42 @@
         <tr>
           <th>Phone number</th>
           <th>Name</th>
-          <th></th>
+          <th class="th-actions"></th>
+          <th class="th-actions"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-contact>
         <tr>
-          <td>{{ contact.phoneNumber }}</td>
-          <td>{{ contact.name }}</td>
+          <td class="td-phone">{{ contact.phoneNumber }}</td>
+
+          @if (isEditingContact.isEditing && contact.phoneNumber === isEditingContact.phoneNumber) {
+            <td>
+              <form class="form-edit-contact" [formGroup]="editContactForm" (keydown.enter)="onEditContactSubmit(contact)">
+                  <label for="contactName" hidden="hidden">Name</label>
+                  <p-inputGroup class="input-with-button">
+                    <input id="contactName" type="text" pInputText pAutoFocus [autofocus]="true" formControlName="name"/>
+                    <button label="Save" type="button" pButton class="p-button" aria-label="Submit"
+                            (click)="onEditContactSubmit(contact)" [disabled]="isSubmitting" [loading]="isSubmitting"></button>
+                  </p-inputGroup>
+              </form>
+            </td>
+            <td>
+              <p-button icon="pi pi-times" [rounded]="true" [text]="true" [outlined]="true" [raised]="true"
+                        severity="secondary"
+                        (onClick)="cancelEditing()"/>
+            </td>
+          } @else {
+            <td>{{ contact.name }}</td>
+            <td>
+              <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [outlined]="true" [raised]="true"
+                        severity="secondary"
+                        (onClick)="editContact(contact)"/>
+            </td>
+          }
+
           <td>
-            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" [outlined]="true" [raised]="true" severity="danger"
+            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" [outlined]="true" [raised]="true"
+                      severity="danger"
                       (onClick)="removeContact(contact.phoneNumber)"/>
           </td>
         </tr>
@@ -48,7 +103,9 @@
 
   <p-button class="button-add-contact" icon="pi pi-plus" [rounded]="true" [raised]="true" (onClick)="goToAddContact()"/>
 
-  <p-toast key="delete-contact"  position="bottom-right"></p-toast>
+  <p-toast key="update-contact" position="bottom-right"></p-toast>
+  <p-toast key="delete-contact" position="bottom-right"></p-toast>
+
   <p-confirmDialog #cd>
     <ng-template pTemplate="headless">
       <div class="confirm-dialog">
