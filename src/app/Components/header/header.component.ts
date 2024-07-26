@@ -20,6 +20,10 @@ export class HeaderComponent {
     this.router.navigateByUrl('/');
   }
 
+  goToRegisterPage() {
+    this.router.navigateByUrl('/register');
+  }
+
   goToContactsPage(): void {
     this.router.navigateByUrl('/contacts');
   }

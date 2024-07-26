@@ -1,0 +1,42 @@
+.container {
+  margin: auto;
+}
+
+.content {
+  width: fit-content;
+  margin: auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.form-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.roles {
+  width: 100%;
+
+  p {
+    margin-top: 0;
+  }
+}
+
+.radio-buttons {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+}
