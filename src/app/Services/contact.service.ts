@@ -10,10 +10,17 @@ import {ContactModel} from "../Models/contact.model";
 export class ContactService {
   private apiUrl: string = "http://localhost:8080/api/contacts"
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getContacts(): Observable<ContactModel[]> {
     return this.http.get<ContactModel[]>(`${this.apiUrl}`)
+  }
+
+  getContact(formData: {
+    phoneNumber: number;
+  }): Observable<ContactModel> {
+    return this.http.get<ContactModel>(`${this.apiUrl}/find/${formData.phoneNumber}`)
   }
 
   addNewContact(formData: {

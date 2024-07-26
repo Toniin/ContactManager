@@ -26,7 +26,6 @@ export class AddContactFormComponent implements OnInit {
   isSubmitting = false;
   inputNameError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
   inputPhoneNumberError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
-  isLoading = true;
 
   constructor(private formBuilder: FormBuilder,
               private contactService: ContactService,
