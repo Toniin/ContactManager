@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  /*align-items: flex-end;*/
+  align-items: flex-end;
+  height: 10vh;
+}
+
+.searchbar-form {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.error-message {
+  position: fixed;
+  right: 50%;
+  color: red;
+  font-size: 1.3rem;
+  margin: 0.5rem 0;
+}

@@ -1,0 +1,16 @@
+<div class="container">
+  <form class="searchbar-form" [formGroup]="getContactForm" (keydown.enter)="onSubmit()">
+    <label for="phoneNumber">Search contact</label>
+    <p-inputGroup>
+      <input id="phoneNumber" type="number" pInputText placeholder="Phone number" formControlName="phoneNumber"/>
+      @if (getContactForm.controls["phoneNumber"].value === null || isSubmitting) {
+        <button type="button" pButton icon="pi pi-search" class="p-button" aria-label="Submit" (click)="onSubmit()" [disabled]="true" [loading]="isSubmitting"></button>
+      } @else {
+        <button type="button" pButton icon="pi pi-search" class="p-button" aria-label="Submit" (click)="onSubmit()"></button>
+      }
+    </p-inputGroup>
+  </form>
+  @if (inputError.isError) {
+    <p class="error-message">{{ inputError.errorMessage }}</p>
+  }
+</div>

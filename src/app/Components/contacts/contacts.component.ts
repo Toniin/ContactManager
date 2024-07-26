@@ -9,6 +9,7 @@ import {Router} from "@angular/router";
 import {ToastModule} from "primeng/toast";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {SearchBarComponent} from "../search-bar/search-bar.component";
 
 @Component({
   selector: 'app-contacts',
@@ -19,6 +20,7 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
     ButtonModule,
     ToastModule,
     ConfirmDialogModule,
+    SearchBarComponent
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './contacts.component.html',
@@ -27,12 +29,16 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 
 export class ContactsComponent implements OnInit {
   contacts$!: Observable<ContactModel[]>;
+  contactFound!: ContactModel;
+  isReset = true;
 
   constructor(
     private contactService: ContactService,
     private router: Router,
-    private confirmationService: ConfirmationService
-  ) {}
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
+  ) {
+  }
 
   ngOnInit() {
     this.contacts$ = this.contactService.getContacts()
@@ -46,11 +52,22 @@ export class ContactsComponent implements OnInit {
     this.confirmationService.confirm({
       accept: () => {
         this.contactService.removeContact(phoneNumber).pipe(
-          tap((test) =>
+          tap((contact ) => {
+            this.messageService.add({key: 'delete-contact', severity:'success', summary:`Contact deleted successfully`, detail:`Contact with phone ${phoneNumber} is deleted`})
             this.contacts$ = this.contactService.getContacts()
+          }
           )
         ).subscribe()
       }
     });
+  }
+
+  getContactFound(contactFound: ContactModel) {
+    this.contactFound = contactFound;
+    this.isReset = false;
+  }
+
+  resetContactFound() {
+    this.isReset = true;
   }
 }
