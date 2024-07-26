@@ -20,7 +20,7 @@
   height: 10vh;
 }
 
-#th-actions {
+.th-actions {
   width: 5rem;
 }
 
@@ -42,4 +42,17 @@
   display: flex;
   margin-top: 2rem;
   justify-content: space-around;
+}
+
+.form-edit-contact {
+  display: flex;
+  flex-direction: row;
+}
+
+.input-with-button {
+  width: fit-content;
+}
+
+.td-phone {
+  width: 25%;
 }

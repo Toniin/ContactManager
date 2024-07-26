@@ -30,6 +30,15 @@ export class ContactService {
     return this.http.post<ContactModel>(`${this.apiUrl}/add`, formData)
   }
 
+  updateContact(newContact: ContactModel): Observable<ContactModel> {
+    const contactToUpdate = {
+      "name": newContact.name,
+      "phoneNumber": newContact.phoneNumber,
+    }
+
+    return this.http.put<ContactModel>(`${this.apiUrl}/update/${newContact.phoneNumber}`, contactToUpdate)
+  }
+
   removeContact(phoneNumber: number) {
     return this.http.delete(`${this.apiUrl}/delete/${phoneNumber}`, {responseType: 'text'})
   }
