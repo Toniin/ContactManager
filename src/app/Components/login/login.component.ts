@@ -40,7 +40,7 @@ export class LoginComponent {
 
 
   ngOnInit() {
-    if (this.authService.isAuthenticated()) {
+    if (this.authService.isLoggedIn()) {
       this.router.navigateByUrl('/contacts');
     }
 

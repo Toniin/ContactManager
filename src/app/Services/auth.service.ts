@@ -27,7 +27,7 @@ export class AuthService {
     this.router.navigateByUrl('/login');
   }
 
-  isAuthenticated(): boolean {
+  isLoggedIn(): boolean {
     if (this.authenticated || this.hasToken()) {
       return true
     } else {

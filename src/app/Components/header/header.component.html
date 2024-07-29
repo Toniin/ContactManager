@@ -1,6 +1,6 @@
 <header>
   <h1>Contact manager</h1>
-  @if (isAuthenticated && !isAuthPaths) {
+  @if (isLoggedIn && !isAuthPaths) {
     <p-button label="Log out" size="small" [text]="true" [raised]="true" severity="secondary" (onClick)="logOut()"/>
   }
 </header>

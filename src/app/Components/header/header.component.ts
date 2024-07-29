@@ -14,14 +14,14 @@ import {AuthService} from "../../Services/auth.service";
 export class HeaderComponent implements OnInit, OnChanges {
   @Input() currentURI!: string;
   isAuthPaths: boolean = false;
-  isAuthenticated: boolean = false;
+  isLoggedIn: boolean = false;
 
   constructor(
     private authService: AuthService,
   ) {}
 
   ngOnInit() {
-    this.isAuthenticated = this.authService.isAuthenticated()
+    this.isLoggedIn = this.authService.isLoggedIn()
   }
 
   ngOnChanges() {
