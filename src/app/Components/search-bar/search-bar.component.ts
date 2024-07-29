@@ -27,7 +27,7 @@ export class SearchBarComponent implements OnInit {
   getContactForm!: FormGroup;
   isSubmitting = false;
   @Output() contactFound: EventEmitter<ContactModel> = new EventEmitter();
-  inputError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
+  responseError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
 
   constructor(private formBuilder: FormBuilder,
               private contactService: ContactService) {
@@ -50,7 +50,7 @@ export class SearchBarComponent implements OnInit {
       this.contactService.getContact(this.getContactForm.value).pipe(
         tap((contactFound) => {
             this.isSubmitting = false;
-            this.inputError = {
+            this.responseError = {
               isError: false,
               errorMessage: ""
             }
@@ -60,7 +60,7 @@ export class SearchBarComponent implements OnInit {
         ),
         catchError(() => {
           this.isSubmitting = false;
-          this.inputError = {
+          this.responseError = {
             isError: true,
             errorMessage: "Contact not found"
           }

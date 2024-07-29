@@ -1,65 +1,64 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, effect, signal, WritableSignal} from '@angular/core';
 import {AutoFocus} from "primeng/autofocus";
 import {Button} from "primeng/button";
-import {InputNumberModule} from "primeng/inputnumber";
 import {InputTextModule} from "primeng/inputtext";
 import {PaginatorModule} from "primeng/paginator";
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
 import {PasswordModule} from "primeng/password";
 import {RadioButtonModule} from "primeng/radiobutton";
-import {UserService} from "../../Services/user.service";
-import {tap} from "rxjs";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {Router} from "@angular/router";
+import {catchError, count, of, tap} from "rxjs";
 import {AuthService} from "../../Services/auth.service";
+import {responseLogin} from "../../Models/types";
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-login',
   standalone: true,
   imports: [
     AutoFocus,
     Button,
-    InputNumberModule,
     InputTextModule,
     PaginatorModule,
-    ReactiveFormsModule,
     PasswordModule,
-    RadioButtonModule
+    RadioButtonModule,
+    ReactiveFormsModule
   ],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
 })
-export class RegisterComponent implements OnInit{
-  registerForm!: FormGroup;
+export class LoginComponent {
+  loginForm!: FormGroup;
   isSubmitting = false;
   inputUsernameError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
   inputPasswordError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
+  responseError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
 
   constructor(private formBuilder: FormBuilder,
-              private userService: UserService,
               private authService: AuthService,
-              private router: Router) {}
+              private router: Router) {
+  }
+
 
   ngOnInit() {
     if (this.authService.isAuthenticated()) {
       this.router.navigateByUrl('/contacts');
     }
 
-    this.registerForm = this.formBuilder.group({
+    this.loginForm = this.formBuilder.group({
       username: [null, Validators.required],
       password: [null, Validators.required],
-        role: ["USER"],
     })
   }
 
-  goToLoginForm() {
-    this.router.navigateByUrl('/login');
+  goToRegisterForm() {
+    this.router.navigateByUrl('/register');
   }
 
-  onRegister(): void {
+  onLogin(): void {
     const usernameInput = document.querySelector('#username')
     const passwordInput = document.querySelector('#password')
 
-    if (this.registerForm.value.username === null || this.registerForm.value.username.length === 0) {
+    if (this.loginForm.value.username === null || this.loginForm.value.username.length === 0) {
       usernameInput!.classList.add("ng-invalid", "ng-dirty")
       this.inputUsernameError = {
         isError: true,
@@ -73,7 +72,7 @@ export class RegisterComponent implements OnInit{
       }
     }
 
-    if (this.registerForm.value.password === null || this.registerForm.value.password.length === 0) {
+    if (this.loginForm.value.password === null || this.loginForm.value.password.length === 0) {
       passwordInput!.classList.add("ng-invalid", "ng-dirty")
       this.inputPasswordError = {
         isError: true,
@@ -87,11 +86,30 @@ export class RegisterComponent implements OnInit{
       }
     }
 
-    if (this.registerForm.valid) {
-      this.userService.createUser(this.registerForm.value).pipe(
-        tap(() => {
-          this.router.navigateByUrl('/login')
+    if (this.loginForm.valid) {
+      this.isSubmitting = true;
+
+      this.authService.loginUser(this.loginForm.value).pipe(
+        tap((user: responseLogin) => {
+          localStorage.setItem("Token", user.token);
+
+          this.isSubmitting = false;
+          this.responseError = {
+            isError: false,
+            errorMessage: ""
+          }
+          this.loginForm.reset()
+
+          this.router.navigateByUrl('/contacts')
         }),
+        catchError(() => {
+          this.isSubmitting = false;
+          this.responseError = {
+            isError: true,
+            errorMessage: "Incorrect username or password."
+          }
+          return of([]);
+        })
       ).subscribe()
     }
   }

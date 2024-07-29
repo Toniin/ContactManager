@@ -1,8 +1,6 @@
 <header>
   <h1>Contact manager</h1>
-  <nav>
-    <p-button [link]="true" label="Home" (onClick)="goToHomePage()"/>
-    <p-button [link]="true" label="Register" (onClick)="goToRegisterPage()"/>
-    <p-button [link]="true" label="Contacts" (onClick)="goToContactsPage()"/>
-  </nav>
+  @if (isAuthenticated && !isAuthPaths) {
+    <p-button label="Log out" size="small" [text]="true" [raised]="true" severity="secondary" (onClick)="logOut()"/>
+  }
 </header>

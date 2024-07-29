@@ -1,8 +1,8 @@
 <div class="container">
   <div class="content">
-    <h2>Register</h2>
+    <h2>Login</h2>
 
-    <form [formGroup]="registerForm" (keydown.enter)="onRegister()">
+    <form [formGroup]="loginForm" (keydown.enter)="onLogin()">
       <div class="form-input">
         <label for="username">Username</label>
         <input id="username" type="text" pInputText pAutoFocus [autofocus]="true" formControlName="username"/>
@@ -19,20 +19,16 @@
         }
       </div>
 
-      <div class="roles">
-        <p>Your role</p>
-        <div class="radio-buttons">
-          <p-radioButton value="USER" label="USER" formControlName="role" inputId="role-user"></p-radioButton>
-          <p-radioButton value="ADMIN" label="ADMIN" formControlName="role" inputId="role-admin"></p-radioButton>
-        </div>
-      </div>
+      @if (responseError.isError) {
+        <p class="error-message">{{ responseError.errorMessage }}</p>
+      }
 
-      <p-button label="Register" [raised]="true" aria-label="Submit" (onClick)="onRegister()" [disabled]="isSubmitting"
+      <p-button label="Login" [raised]="true" aria-label="Submit" (onClick)="onLogin()" [disabled]="isSubmitting"
                 [loading]="isSubmitting"/>
     </form>
   </div>
-  <div class="have-an-account">
-    <p>Already have an account ?</p>
-    <p-button label="Login" size="small" [link]="true" severity="secondary" (onClick)="goToLoginForm()"/>
-  </div>
+    <div class="not-an-account">
+      <p>Don't have an account ?</p>
+      <p-button label="Register" size="small" [link]="true" severity="secondary" (onClick)="goToRegisterForm()"/>
+    </div>
 </div>

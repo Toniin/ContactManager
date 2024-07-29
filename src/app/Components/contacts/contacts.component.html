@@ -1,5 +1,4 @@
 <div class="container">
-
   @if (contactFound && !isReset) {
     <p-button class="button-refresh" label="Reset" icon="pi pi-refresh" size="small" [text]="true" [raised]="true"
               severity="secondary" (onClick)="resetContactFound()"/>
@@ -7,6 +6,7 @@
     <p-table class="table" [value]="[{}]" [tableStyle]="{ 'min-width': '50rem' }">
       <ng-template pTemplate="header">
         <tr>
+          <th></th>
           <th>Phone number</th>
           <th>Name</th>
           <th class="th-actions"></th>
@@ -15,16 +15,25 @@
       </ng-template>
       <ng-template pTemplate="body">
         <tr>
+          <td class="td-avatar">
+            <p-avatar
+              image="https://api.dicebear.com/9.x/personas/svg?seed={{ contactFound.phoneNumber }}"
+              size="xlarge"
+              shape="circle"/>
+          </td>
           <td class="td-phone">{{ contactFound.phoneNumber }}</td>
 
           @if (isEditingContact.isEditing && contactFound.phoneNumber === isEditingContact.phoneNumber) {
             <td>
-              <form class="form-edit-contact" [formGroup]="editContactForm" (keydown.enter)="onEditContactSubmit(contactFound)">
+              <form class="form-edit-contact" [formGroup]="editContactForm"
+                    (keydown.enter)="onEditContactSubmit(contactFound)">
                 <label for="contactFoundName" hidden="hidden">Name</label>
                 <p-inputGroup class="input-with-button">
-                  <input id="contactFoundName" type="text" pInputText pAutoFocus [autofocus]="true" formControlName="name"/>
+                  <input id="contactFoundName" type="text" pInputText pAutoFocus [autofocus]="true"
+                         formControlName="name"/>
                   <button label="Save" type="button" pButton class="p-button" aria-label="Submit"
-                          (click)="onEditContactSubmit(contactFound)" [disabled]="isSubmitting" [loading]="isSubmitting"></button>
+                          (click)="onEditContactSubmit(contactFound)" [disabled]="isSubmitting"
+                          [loading]="isSubmitting"></button>
                 </p-inputGroup>
               </form>
             </td>
@@ -56,6 +65,7 @@
     <p-table class="table" [value]="(contacts$ | async)!" [tableStyle]="{ 'min-width': '50rem' }">
       <ng-template pTemplate="header">
         <tr>
+          <th></th>
           <th>Phone number</th>
           <th>Name</th>
           <th class="th-actions"></th>
@@ -64,17 +74,25 @@
       </ng-template>
       <ng-template pTemplate="body" let-contact>
         <tr>
+          <td class="td-avatar">
+            <p-avatar
+              image="https://api.dicebear.com/9.x/personas/svg?seed={{ contact.phoneNumber }}"
+              size="xlarge"
+              shape="circle"/>
+          </td>
           <td class="td-phone">{{ contact.phoneNumber }}</td>
 
           @if (isEditingContact.isEditing && contact.phoneNumber === isEditingContact.phoneNumber) {
             <td>
-              <form class="form-edit-contact" [formGroup]="editContactForm" (keydown.enter)="onEditContactSubmit(contact)">
-                  <label for="contactName" hidden="hidden">Name</label>
-                  <p-inputGroup class="input-with-button">
-                    <input id="contactName" type="text" pInputText pAutoFocus [autofocus]="true" formControlName="name"/>
-                    <button label="Save" type="button" pButton class="p-button" aria-label="Submit"
-                            (click)="onEditContactSubmit(contact)" [disabled]="isSubmitting" [loading]="isSubmitting"></button>
-                  </p-inputGroup>
+              <form class="form-edit-contact" [formGroup]="editContactForm"
+                    (keydown.enter)="onEditContactSubmit(contact)">
+                <label for="contactName" hidden="hidden">Name</label>
+                <p-inputGroup class="input-with-button">
+                  <input id="contactName" type="text" pInputText pAutoFocus [autofocus]="true" formControlName="name"/>
+                  <button label="Save" type="button" pButton class="p-button" aria-label="Submit"
+                          (click)="onEditContactSubmit(contact)" [disabled]="isSubmitting"
+                          [loading]="isSubmitting"></button>
+                </p-inputGroup>
               </form>
             </td>
             <td>

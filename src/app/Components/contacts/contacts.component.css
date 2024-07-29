@@ -53,6 +53,10 @@
   width: fit-content;
 }
 
+.td-avatar {
+  width: 0;
+}
+
 .td-phone {
   width: 25%;
 }

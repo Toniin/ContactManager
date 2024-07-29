@@ -20,6 +20,10 @@
         }
       </div>
 
+      @if (responseError.isError) {
+        <p class="error-message">{{ responseError.errorMessage }}</p>
+      }
+
       <p-button label="Add contact" [raised]="true" aria-label="Submit" (onClick)="onSubmit()" [disabled]="isSubmitting" [loading]="isSubmitting"/>
     </form>
   </div>
