@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {HeaderComponent} from "./Components/header/header.component";
-import {RegisterComponent} from "./Components/register/register.component";
 
 @Component({
   selector: 'app-root',

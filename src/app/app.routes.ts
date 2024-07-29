@@ -8,9 +8,9 @@ import {NotFoundComponent} from "./Components/not-found/not-found.component";
 
 export const routes: Routes = [
   { path: '', redirectTo: "login", pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: "contacts", component: ContactsComponent, canActivate: [AuthGuard]},
-  { path: "contacts/add", component: AddContactFormComponent, canActivate: [AuthGuard]},
-  { path: "**", component: NotFoundComponent }
+  { path: 'login', component: LoginComponent, title: "Login - ContactManager" },
+  { path: 'register', component: RegisterComponent, title: 'Register - Contact Manager' },
+  { path: "contacts", component: ContactsComponent, canActivate: [AuthGuard], title: 'Contacts - Contact Manager'},
+  { path: "contacts/add", component: AddContactFormComponent, canActivate: [AuthGuard], title: 'Add contact - Contact Manager'},
+  { path: "**", component: NotFoundComponent, title: 'Not found - Contact Manager' }
 ];
