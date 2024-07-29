@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {ButtonModule} from "primeng/button";
-import {Router} from "@angular/router";
+import {AuthService} from "../../Services/auth.service";
 
 @Component({
   selector: 'app-header',
@@ -11,20 +11,28 @@ import {Router} from "@angular/router";
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnChanges {
+  @Input() currentURI!: string;
+  isAuthPaths: boolean = false;
+  isAuthenticated: boolean = false;
 
-  constructor(private router: Router) {
+  constructor(
+    private authService: AuthService,
+  ) {}
+
+  ngOnInit() {
+    this.isAuthenticated = this.authService.isAuthenticated()
   }
 
-  goToHomePage(): void {
-    this.router.navigateByUrl('/');
+  ngOnChanges() {
+    if (this.currentURI === '/login' || this.currentURI === '/register') {
+      this.isAuthPaths = true;
+    } else {
+      this.isAuthPaths = false;
+    }
   }
 
-  goToRegisterPage() {
-    this.router.navigateByUrl('/register');
-  }
-
-  goToContactsPage(): void {
-    this.router.navigateByUrl('/contacts');
+  logOut(): void {
+    this.authService.logOut()
   }
 }

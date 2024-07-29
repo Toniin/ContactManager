@@ -5,7 +5,7 @@ import {InputNumberModule} from "primeng/inputnumber";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {ContactService} from "../../Services/contact.service";
-import {tap} from "rxjs";
+import {catchError, of, tap} from "rxjs";
 import {AutoFocusModule} from "primeng/autofocus";
 
 @Component({
@@ -26,6 +26,7 @@ export class AddContactFormComponent implements OnInit {
   isSubmitting = false;
   inputNameError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
   inputPhoneNumberError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
+  responseError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
 
   constructor(private formBuilder: FormBuilder,
               private contactService: ContactService,
@@ -72,9 +73,25 @@ export class AddContactFormComponent implements OnInit {
     if (this.newContactForm.valid) {
       this.isSubmitting = true;
       this.contactService.addNewContact(this.newContactForm.value).pipe(
-        tap(() =>
-          this.router.navigateByUrl('/contacts')
-        )
+        tap(() => {
+            this.isSubmitting = false;
+            this.responseError = {
+              isError: false,
+              errorMessage: ""
+            }
+            this.newContactForm.reset()
+
+            this.router.navigateByUrl('/contacts')
+          }
+        ),
+        catchError(() => {
+          this.isSubmitting = false;
+          this.responseError = {
+            isError: true,
+            errorMessage: "Not allowed."
+          }
+          return of([]);
+        })
       ).subscribe()
     }
   }

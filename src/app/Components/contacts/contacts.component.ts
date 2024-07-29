@@ -15,6 +15,7 @@ import {InputNumberModule} from "primeng/inputnumber";
 import {InputTextModule} from "primeng/inputtext";
 import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {InputGroupModule} from "primeng/inputgroup";
+import {AvatarModule} from "primeng/avatar";
 
 @Component({
   selector: 'app-contacts',
@@ -30,7 +31,8 @@ import {InputGroupModule} from "primeng/inputgroup";
     InputNumberModule,
     InputTextModule,
     ReactiveFormsModule,
-    InputGroupModule
+    InputGroupModule,
+    AvatarModule
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './contacts.component.html',
@@ -73,6 +75,7 @@ export class ContactsComponent implements OnInit {
           tap(() => {
             this.messageService.add({key: 'delete-contact', severity:'success', summary:`Contact deleted successfully`, detail:`Contact with phone ${phoneNumber} is deleted`})
             this.contacts$ = this.contactService.getContacts()
+
             if (this.contactFound) {
               this.resetContactFound()
             }
@@ -121,11 +124,7 @@ export class ContactsComponent implements OnInit {
       this.contactService.updateContact(newContact).pipe(
         tap(() => {
           this.messageService.add({key: 'update-contact', severity:'success', summary:`Contact updated successfully`, detail:`Contact with phone ${contact.phoneNumber} is updated`})
-          this.isEditingContact = {
-            isEditing: false,
-            phoneNumber: 0,
-          }
-          this.editContactForm.reset()
+          this.cancelEditing()
           this.contacts$ = this.contactService.getContacts()
 
           if (this.contactFound) {
