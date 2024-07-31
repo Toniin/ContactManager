@@ -1,23 +1,6 @@
-.container {
-  position: relative;
-}
-
 .table {
   display: block;
   margin-top: 1rem;
-}
-
-.button-add-contact {
-  position: fixed;
-  bottom: 20px;
-  right: 25%;
-}
-
-.button-refresh {
-  display: flex;
-  align-items: flex-end;
-  width: fit-content;
-  height: 10vh;
 }
 
 .th-actions {

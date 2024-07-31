@@ -1,18 +1,18 @@
 import { Routes } from '@angular/router';
-import {ContactsComponent} from "./Components/contacts/contacts.component";
-import {AddContactFormComponent} from "./Components/add-contact-form/add-contact-form.component";
-import {RegisterComponent} from "./Components/register/register.component";
-import {LoginComponent} from "./Components/login/login.component";
 import {AuthGuard} from "./Guards/auth.guard";
-import {NotFoundComponent} from "./Components/not-found/not-found.component";
+import {LoginPageComponent} from "./Views/public/login-page/login-page.component";
+import {RegisterPageComponent} from "./Views/public/register-page/register-page.component";
+import {ErrorPageComponent} from "./Views/public/error-page/error-page.component";
+import {AddContactPageComponent} from "./Views/protected/add-contact-page/add-contact-page.component";
+import {ContactsPageComponent} from "./Views/protected/contacts-page/contacts-page.component";
 
 const appName = "ContactManager"
 
 export const routes: Routes = [
   { path: '', redirectTo: "login", pathMatch: 'full' },
-  { path: 'login', component: LoginComponent, title: `Login - ${appName}` },
-  { path: 'register', component: RegisterComponent, title: `Register - ${appName}` },
-  { path: "contacts", component: ContactsComponent, canActivate: [AuthGuard], title: `Contacts - ${appName}`},
-  { path: "contacts/add", component: AddContactFormComponent, canActivate: [AuthGuard], title: `Add contact - ${appName}`},
-  { path: "**", component: NotFoundComponent, title: `Not found - ${appName}` }
+  { path: 'login', component: LoginPageComponent, title: `Login - ${appName}` },
+  { path: 'register', component: RegisterPageComponent, title: `Register - ${appName}` },
+  { path: "contacts", component: ContactsPageComponent, canActivate: [AuthGuard], title: `Contacts - ${appName}`},
+  { path: "contacts/add", component: AddContactPageComponent, canActivate: [AuthGuard], title: `Add contact - ${appName}`},
+  { path: "**", component: ErrorPageComponent, title: `Not found - ${appName}` }
 ];

@@ -1,0 +1,13 @@
+<div class="container">
+
+  @if (!isReset) {
+    <p-button class="button-refresh" label="Reset" icon="pi pi-refresh" size="small" [text]="true" [raised]="true"
+              severity="secondary" (onClick)="resetContactFound()"/>
+    <app-contacts [contactFound$]="contactFound$" [(isReset)]="isReset"/>
+  } @else {
+    <app-search-bar (contactFound)="getContactFound($event)"/>
+    <app-contacts [contacts$]="contacts$" [(isReset)]="isReset"/>
+  }
+
+  <p-button class="button-add-contact" icon="pi pi-plus" [rounded]="true" [raised]="true" (onClick)="goToAddContact()"/>
+</div>

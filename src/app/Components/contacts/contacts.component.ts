@@ -1,11 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {Observable, tap} from "rxjs";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Observable, of, tap} from "rxjs";
 import {ContactService} from "../../Services/contact.service";
 import {ContactModel} from "../../Models/contact.model";
 import {AsyncPipe} from "@angular/common";
 import {TableModule} from "primeng/table";
 import {ButtonModule} from "primeng/button";
-import {Router} from "@angular/router";
 import {ToastModule} from "primeng/toast";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
@@ -40,32 +39,26 @@ import {AvatarModule} from "primeng/avatar";
 })
 
 export class ContactsComponent implements OnInit {
-  contacts$!: Observable<ContactModel[]>;
-  contactFound!: ContactModel;
-  isReset = true;
+  @Input() contacts$!: Observable<ContactModel[]>;
+  @Input() contactFound$!: Observable<ContactModel[]>;
+  @Input() isReset!: boolean;
+  @Output() isResetChange = new EventEmitter<boolean>();
+
   isEditingContact = {isEditing: false, phoneNumber: 0} ;
   editContactForm!: FormGroup;
   isSubmitting = false;
 
   constructor(
     private contactService: ContactService,
-    private router: Router,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private formBuilder: FormBuilder
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
-    this.contacts$ = this.contactService.getContacts()
-
     this.editContactForm = this.formBuilder.group({
       name: [null],
     })
-  }
-
-  goToAddContact(): void {
-    this.router.navigateByUrl('/contacts/add');
   }
 
   removeContact(phoneNumber: number) {
@@ -76,7 +69,7 @@ export class ContactsComponent implements OnInit {
             this.messageService.add({key: 'delete-contact', severity:'success', summary:`Contact deleted successfully`, detail:`Contact with phone ${phoneNumber} is deleted`})
             this.contacts$ = this.contactService.getContacts()
 
-            if (this.contactFound) {
+            if (this.contactFound$) {
               this.resetContactFound()
             }
           }
@@ -86,13 +79,9 @@ export class ContactsComponent implements OnInit {
     });
   }
 
-  getContactFound(contactFound: ContactModel) {
-    this.contactFound = contactFound;
-    this.isReset = false;
-  }
-
   resetContactFound() {
-    this.isReset = true;
+    this.isReset = true
+    this.isResetChange.emit(this.isReset)
   }
 
   editContact(contact: ContactModel) {
@@ -127,8 +116,10 @@ export class ContactsComponent implements OnInit {
           this.cancelEditing()
           this.contacts$ = this.contactService.getContacts()
 
-          if (this.contactFound) {
-            this.contactFound = newContact;
+          if (this.contactFound$) {
+            this.contactFound$ = of([
+              newContact
+            ]);
           }
         })
       ).subscribe()

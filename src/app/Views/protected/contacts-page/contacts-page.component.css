@@ -1,0 +1,16 @@
+.container {
+  position: relative;
+}
+
+.button-add-contact {
+  position: fixed;
+  bottom: 20px;
+  right: 25%;
+}
+
+.button-refresh {
+  display: flex;
+  align-items: flex-end;
+  width: fit-content;
+  height: 10vh;
+}

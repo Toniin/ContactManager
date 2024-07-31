@@ -1,0 +1,24 @@
+<form [formGroup]="loginForm" (keydown.enter)="onLogin()">
+  <div class="form-input">
+    <label for="username">Username</label>
+    <input id="username" type="text" pInputText pAutoFocus [autofocus]="true" formControlName="username"/>
+    @if (inputUsernameError.isError) {
+      <p class="error-message">{{ inputUsernameError.errorMessage }}</p>
+    }
+  </div>
+
+  <div class="form-input">
+    <label for="password">Password</label>
+    <p-password id="password" formControlName="password" [feedback]="false"/>
+    @if (inputPasswordError.isError) {
+      <p class="error-message">{{ inputPasswordError.errorMessage }}</p>
+    }
+  </div>
+
+  @if (responseError.isError) {
+    <p class="error-message">{{ responseError.errorMessage }}</p>
+  }
+
+  <p-button label="Login" [raised]="true" aria-label="Submit" (onClick)="onLogin()" [disabled]="isSubmitting"
+            [loading]="isSubmitting"/>
+</form>

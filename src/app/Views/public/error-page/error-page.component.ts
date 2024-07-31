@@ -1,18 +1,17 @@
 import { Component } from '@angular/core';
-import {FormBuilder} from "@angular/forms";
 import {Router} from "@angular/router";
 import {Button} from "primeng/button";
 
 @Component({
-  selector: 'app-not-found',
+  selector: 'app-error-page',
   standalone: true,
   imports: [
     Button
   ],
-  templateUrl: './not-found.component.html',
-  styleUrl: './not-found.component.css'
+  templateUrl: './error-page.component.html',
+  styleUrl: './error-page.component.css'
 })
-export class NotFoundComponent {
+export class ErrorPageComponent {
   constructor(private router: Router) {}
 
   goToBack() {

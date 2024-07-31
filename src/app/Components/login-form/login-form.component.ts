@@ -1,4 +1,4 @@
-import {Component, effect, signal, WritableSignal} from '@angular/core';
+import {Component} from '@angular/core';
 import {AutoFocus} from "primeng/autofocus";
 import {Button} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
@@ -7,12 +7,12 @@ import {PasswordModule} from "primeng/password";
 import {RadioButtonModule} from "primeng/radiobutton";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
-import {catchError, count, of, tap} from "rxjs";
+import {catchError, of, tap} from "rxjs";
 import {AuthService} from "../../Services/auth.service";
 import {responseLogin} from "../../Models/types";
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-form',
   standalone: true,
   imports: [
     AutoFocus,
@@ -23,10 +23,10 @@ import {responseLogin} from "../../Models/types";
     RadioButtonModule,
     ReactiveFormsModule
   ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  templateUrl: './login-form.component.html',
+  styleUrl: './login-form.component.css'
 })
-export class LoginComponent {
+export class LoginFormComponent {
   loginForm!: FormGroup;
   isSubmitting = false;
   inputUsernameError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
@@ -48,10 +48,6 @@ export class LoginComponent {
       username: [null, Validators.required],
       password: [null, Validators.required],
     })
-  }
-
-  goToRegisterForm() {
-    this.router.navigateByUrl('/register');
   }
 
   onLogin(): void {

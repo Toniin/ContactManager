@@ -13,7 +13,7 @@ import {tap} from "rxjs";
 import {AuthService} from "../../Services/auth.service";
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-register-form',
   standalone: true,
   imports: [
     AutoFocus,
@@ -25,10 +25,10 @@ import {AuthService} from "../../Services/auth.service";
     PasswordModule,
     RadioButtonModule
   ],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  templateUrl: './register-form.component.html',
+  styleUrl: './register-form.component.css'
 })
-export class RegisterComponent implements OnInit{
+export class RegisterFormComponent implements OnInit{
   registerForm!: FormGroup;
   isSubmitting = false;
   inputUsernameError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
@@ -49,10 +49,6 @@ export class RegisterComponent implements OnInit{
       password: [null, Validators.required],
         role: ["USER"],
     })
-  }
-
-  goToLoginForm() {
-    this.router.navigateByUrl('/login');
   }
 
   onRegister(): void {

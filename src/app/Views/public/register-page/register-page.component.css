@@ -1,0 +1,15 @@
+.container {
+  margin: auto;
+}
+
+.content {
+  width: fit-content;
+  margin: auto;
+}
+
+.have-an-account {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

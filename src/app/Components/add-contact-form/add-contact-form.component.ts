@@ -95,8 +95,4 @@ export class AddContactFormComponent implements OnInit {
       ).subscribe()
     }
   }
-
-  goToBack() {
-    this.router.navigateByUrl('/contacts')
-  }
 }

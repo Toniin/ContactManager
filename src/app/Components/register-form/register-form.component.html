@@ -1,0 +1,29 @@
+<form [formGroup]="registerForm" (keydown.enter)="onRegister()">
+  <div class="form-input">
+    <label for="username">Username</label>
+    <input id="username" type="text" pInputText pAutoFocus [autofocus]="true" formControlName="username"/>
+    @if (inputUsernameError.isError) {
+      <p class="error-message">{{ inputUsernameError.errorMessage }}</p>
+    }
+  </div>
+
+  <div class="form-input">
+    <label for="password">Password</label>
+    <p-password id="password" formControlName="password" [feedback]="false"/>
+    @if (inputPasswordError.isError) {
+      <p class="error-message">{{ inputPasswordError.errorMessage }}</p>
+    }
+  </div>
+
+  <div class="roles">
+    <p>Your role</p>
+    <div class="radio-buttons">
+      <p-radioButton value="USER" label="USER" formControlName="role" inputId="role-user"></p-radioButton>
+      <p-radioButton value="ADMIN" label="ADMIN" formControlName="role" inputId="role-admin"></p-radioButton>
+    </div>
+  </div>
+
+  <p-button label="Register" [raised]="true" aria-label="Submit" (onClick)="onRegister()" [disabled]="isSubmitting"
+            [loading]="isSubmitting"/>
+</form>
+

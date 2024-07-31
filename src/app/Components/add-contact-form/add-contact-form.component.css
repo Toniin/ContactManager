@@ -1,12 +1,3 @@
-.container {
-  margin: auto;
-}
-
-.content {
-  width: fit-content;
-  margin: auto;
-}
-
 form {
   display: flex;
   flex-direction: column;
