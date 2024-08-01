@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {inject, Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {ContactModel} from "../Models/contact.model";
@@ -9,9 +9,7 @@ import {environnement} from "../../Environnements/environnement";
 })
 export class ContactService {
   private apiUrl: string = environnement.apiUrl
-
-  constructor(private http: HttpClient) {
-  }
+  private http = inject(HttpClient);
 
   getContacts(): Observable<ContactModel[]> {
     return this.http.get<ContactModel[]>(`${this.apiUrl}`)

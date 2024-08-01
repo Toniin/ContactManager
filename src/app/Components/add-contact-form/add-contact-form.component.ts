@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {InputTextModule} from "primeng/inputtext";
 import {ButtonModule} from "primeng/button";
 import {InputNumberModule} from "primeng/inputnumber";
@@ -21,24 +21,20 @@ import {AutoFocusModule} from "primeng/autofocus";
   templateUrl: './add-contact-form.component.html',
   styleUrl: './add-contact-form.component.css'
 })
-export class AddContactFormComponent implements OnInit {
-  newContactForm!: FormGroup;
+export class AddContactFormComponent {
+  private formBuilder = inject(FormBuilder);
+  private contactService = inject(ContactService);
+  private router = inject(Router);
+
   isSubmitting = false;
   inputNameError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
   inputPhoneNumberError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
   responseError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
 
-  constructor(private formBuilder: FormBuilder,
-              private contactService: ContactService,
-              private router: Router) {
-  }
-
-  ngOnInit() {
-    this.newContactForm = this.formBuilder.group({
-      name: [null, Validators.required],
-      phoneNumber: [null, Validators.required],
-    })
-  }
+  newContactForm: FormGroup = this.formBuilder.group({
+    name: [null, Validators.required],
+    phoneNumber: [null, Validators.required],
+  })
 
   onSubmit() {
     const nameInput = document.querySelector('#name')

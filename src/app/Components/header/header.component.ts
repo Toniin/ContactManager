@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, inject, Input, OnChanges, OnInit} from '@angular/core';
 import {ButtonModule} from "primeng/button";
 import {AuthService} from "../../Services/auth.service";
 
@@ -11,18 +11,12 @@ import {AuthService} from "../../Services/auth.service";
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent implements OnInit, OnChanges {
+export class HeaderComponent implements OnChanges {
+  private authService = inject(AuthService);
+
   @Input() currentURI!: string;
   isAuthPaths: boolean = false;
-  isLoggedIn: boolean = false;
-
-  constructor(
-    private authService: AuthService,
-  ) {}
-
-  ngOnInit() {
-    this.isLoggedIn = this.authService.isLoggedIn()
-  }
+  isLoggedIn: boolean = this.authService.isLoggedIn();
 
   ngOnChanges() {
     if (this.currentURI === '/login' || this.currentURI === '/register') {

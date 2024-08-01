@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {Button} from "primeng/button";
 import {Router, RouterLink} from "@angular/router";
 import {Observable, of} from "rxjs";
@@ -21,19 +21,12 @@ import {AsyncPipe} from "@angular/common";
   templateUrl: './contacts-page.component.html',
   styleUrl: './contacts-page.component.css'
 })
-export class ContactsPageComponent implements OnInit {
-  contacts$!: Observable<ContactModel[]>;
+export class ContactsPageComponent {
+  private contactService = inject(ContactService);
+
+  contacts$: Observable<ContactModel[]> = this.contactService.getContacts()
   contactFound$!: Observable<ContactModel[]>;
   isReset = true;
-
-  constructor(
-    private contactService: ContactService,
-    private router: Router
-  ) {}
-
-  ngOnInit() {
-    this.contacts$ = this.contactService.getContacts()
-  }
 
   resetContactFound() {
     this.isReset = true

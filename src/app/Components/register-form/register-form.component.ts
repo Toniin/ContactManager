@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {AutoFocus} from "primeng/autofocus";
 import {Button} from "primeng/button";
 import {InputNumberModule} from "primeng/inputnumber";
@@ -29,26 +29,25 @@ import {AuthService} from "../../Services/auth.service";
   styleUrl: './register-form.component.css'
 })
 export class RegisterFormComponent implements OnInit{
-  registerForm!: FormGroup;
+  private formBuilder = inject(FormBuilder);
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   isSubmitting = false;
   inputUsernameError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
   inputPasswordError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
 
-  constructor(private formBuilder: FormBuilder,
-              private userService: UserService,
-              private authService: AuthService,
-              private router: Router) {}
+  registerForm: FormGroup = this.formBuilder.group({
+    username: [null, Validators.required],
+    password: [null, Validators.required],
+    role: ["USER"],
+  });
 
   ngOnInit() {
     if (this.authService.isLoggedIn()) {
       this.router.navigateByUrl('/contacts');
     }
-
-    this.registerForm = this.formBuilder.group({
-      username: [null, Validators.required],
-      password: [null, Validators.required],
-        role: ["USER"],
-    })
   }
 
   onRegister(): void {

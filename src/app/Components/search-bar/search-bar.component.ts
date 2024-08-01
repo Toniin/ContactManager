@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
 import {InputTextModule} from "primeng/inputtext";
 import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {Button, ButtonDirective} from "primeng/button";
@@ -23,21 +23,17 @@ import {NgClass, NgIf} from "@angular/common";
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.css'
 })
-export class SearchBarComponent implements OnInit {
-  getContactForm!: FormGroup;
+export class SearchBarComponent {
+  private formBuilder = inject(FormBuilder);
+  private contactService = inject(ContactService);
+
   isSubmitting = false;
   @Output() contactFound: EventEmitter<ContactModel> = new EventEmitter();
   responseError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
 
-  constructor(private formBuilder: FormBuilder,
-              private contactService: ContactService) {
-  }
-
-  ngOnInit() {
-    this.getContactForm = this.formBuilder.group({
-      phoneNumber: [null],
-    })
-  }
+  getContactForm: FormGroup = this.formBuilder.group({
+    phoneNumber: [null],
+  });
 
   emitContactFound(contactFound: ContactModel) {
     this.contactFound.emit(contactFound);

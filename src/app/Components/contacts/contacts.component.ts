@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {Observable, of, tap} from "rxjs";
 import {ContactService} from "../../Services/contact.service";
 import {ContactModel} from "../../Models/contact.model";
@@ -38,41 +38,42 @@ import {AvatarModule} from "primeng/avatar";
   styleUrl: './contacts.component.css',
 })
 
-export class ContactsComponent implements OnInit {
+export class ContactsComponent {
+  private contactService = inject(ContactService);
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
+  private formBuilder = inject(FormBuilder);
+
   @Input() contacts$!: Observable<ContactModel[]>;
   @Input() contactFound$!: Observable<ContactModel[]>;
   @Input() isReset!: boolean;
   @Output() isResetChange = new EventEmitter<boolean>();
 
-  isEditingContact = {isEditing: false, phoneNumber: 0} ;
-  editContactForm!: FormGroup;
   isSubmitting = false;
+  isEditingContact = {isEditing: false, phoneNumber: 0};
 
-  constructor(
-    private contactService: ContactService,
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService,
-    private formBuilder: FormBuilder
-  ) {}
+  editContactForm: FormGroup = this.formBuilder.group({
+    name: [null],
+  })
 
-  ngOnInit() {
-    this.editContactForm = this.formBuilder.group({
-      name: [null],
-    })
-  }
 
   removeContact(phoneNumber: number) {
     this.confirmationService.confirm({
       accept: () => {
         this.contactService.removeContact(phoneNumber).pipe(
           tap(() => {
-            this.messageService.add({key: 'delete-contact', severity:'success', summary:`Contact deleted successfully`, detail:`Contact with phone ${phoneNumber} is deleted`})
-            this.contacts$ = this.contactService.getContacts()
+              this.messageService.add({
+                key: 'delete-contact',
+                severity: 'success',
+                summary: `Contact deleted successfully`,
+                detail: `Contact with phone ${phoneNumber} is deleted`
+              })
+              this.contacts$ = this.contactService.getContacts()
 
-            if (this.contactFound$) {
-              this.resetContactFound()
+              if (this.contactFound$) {
+                this.resetContactFound()
+              }
             }
-          }
           )
         ).subscribe()
       }
@@ -112,7 +113,12 @@ export class ContactsComponent implements OnInit {
 
       this.contactService.updateContact(newContact).pipe(
         tap(() => {
-          this.messageService.add({key: 'update-contact', severity:'success', summary:`Contact updated successfully`, detail:`Contact with phone ${contact.phoneNumber} is updated`})
+          this.messageService.add({
+            key: 'update-contact',
+            severity: 'success',
+            summary: `Contact updated successfully`,
+            detail: `Contact with phone ${contact.phoneNumber} is updated`
+          })
           this.cancelEditing()
           this.contacts$ = this.contactService.getContacts()
 

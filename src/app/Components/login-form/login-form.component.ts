@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {AutoFocus} from "primeng/autofocus";
 import {Button} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
@@ -26,28 +26,25 @@ import {responseLogin} from "../../Models/types";
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.css'
 })
-export class LoginFormComponent {
-  loginForm!: FormGroup;
+export class LoginFormComponent implements OnInit {
+  private formBuilder = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   isSubmitting = false;
   inputUsernameError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
   inputPasswordError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
   responseError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
 
-  constructor(private formBuilder: FormBuilder,
-              private authService: AuthService,
-              private router: Router) {
-  }
-
+  loginForm: FormGroup = this.formBuilder.group({
+    username: [null, Validators.required],
+    password: [null, Validators.required],
+  })
 
   ngOnInit() {
     if (this.authService.isLoggedIn()) {
       this.router.navigateByUrl('/contacts');
     }
-
-    this.loginForm = this.formBuilder.group({
-      username: [null, Validators.required],
-      password: [null, Validators.required],
-    })
   }
 
   onLogin(): void {
