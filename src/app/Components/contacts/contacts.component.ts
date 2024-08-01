@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output, WritableSignal} from '@angular/core';
 import {Observable, of, tap} from "rxjs";
 import {ContactService} from "../../Services/contact.service";
 import {ContactModel} from "../../Models/contact.model";
@@ -44,10 +44,10 @@ export class ContactsComponent {
   private messageService = inject(MessageService);
   private formBuilder = inject(FormBuilder);
 
-  @Input() contacts$!: Observable<ContactModel[]>;
-  @Input() contactFound$!: Observable<ContactModel[]>;
-  @Input() isReset!: boolean;
-  @Output() isResetChange = new EventEmitter<boolean>();
+  @Input() contacts!: WritableSignal<Observable<ContactModel[]>>;
+  @Input() contactFound!: WritableSignal<Observable<ContactModel[]>>;
+  @Input() isContactFound!: boolean;
+  @Output() isContactFoundChange = new EventEmitter<boolean>();
 
   isSubmitting = false;
   isEditingContact = {isEditing: false, phoneNumber: 0};
@@ -68,10 +68,10 @@ export class ContactsComponent {
                 summary: `Contact deleted successfully`,
                 detail: `Contact with phone ${phoneNumber} is deleted`
               })
-              this.contacts$ = this.contactService.getContacts()
-
-              if (this.contactFound$) {
+              if (this.isContactFound) {
                 this.resetContactFound()
+              } else {
+                this.contacts.set(this.contactService.getContacts())
               }
             }
           )
@@ -81,8 +81,8 @@ export class ContactsComponent {
   }
 
   resetContactFound() {
-    this.isReset = true
-    this.isResetChange.emit(this.isReset)
+    this.isContactFound = false
+    this.isContactFoundChange.emit(this.isContactFound)
   }
 
   editContact(contact: ContactModel) {
@@ -120,12 +120,13 @@ export class ContactsComponent {
             detail: `Contact with phone ${contact.phoneNumber} is updated`
           })
           this.cancelEditing()
-          this.contacts$ = this.contactService.getContacts()
 
-          if (this.contactFound$) {
-            this.contactFound$ = of([
+          if (this.isContactFound) {
+            this.contactFound.set(of([
               newContact
-            ]);
+            ]))
+          } else {
+            this.contacts.set(this.contactService.getContacts())
           }
         })
       ).subscribe()

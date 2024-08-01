@@ -1,6 +1,6 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, signal, WritableSignal} from '@angular/core';
 import {Button} from "primeng/button";
-import {Router, RouterLink} from "@angular/router";
+import {RouterLink} from "@angular/router";
 import {Observable, of} from "rxjs";
 import {ContactModel} from "../../../Models/contact.model";
 import {ContactService} from "../../../Services/contact.service";
@@ -24,17 +24,18 @@ import {AsyncPipe} from "@angular/common";
 export class ContactsPageComponent {
   private contactService = inject(ContactService);
 
-  contacts$: Observable<ContactModel[]> = this.contactService.getContacts()
-  contactFound$!: Observable<ContactModel[]>;
-  isReset = true;
+  contacts = signal(this.contactService.getContacts())
+  contactFound!: WritableSignal<Observable<ContactModel[]>>;
+  isContactFound = false;
 
   resetContactFound() {
-    this.isReset = true
+    this.isContactFound = false
   }
 
   getContactFound(contactFound: ContactModel) {
-    this.contactFound$ = of([
+    this.contactFound = signal(of([
       contactFound
-    ]);
-    this.isReset = false;
-  }}
+    ]));
+    this.isContactFound = true;
+  }
+}

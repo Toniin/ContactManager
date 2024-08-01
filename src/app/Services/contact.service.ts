@@ -1,8 +1,9 @@
-import {inject, Injectable} from "@angular/core";
+import {inject, Injectable, Signal} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {ContactModel} from "../Models/contact.model";
 import {environnement} from "../../Environnements/environnement";
+import {toSignal} from "@angular/core/rxjs-interop";
 
 @Injectable({
   providedIn: 'root'

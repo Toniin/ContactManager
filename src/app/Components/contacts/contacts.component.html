@@ -1,4 +1,4 @@
-<p-table class="table" [value]="((contactFound$ ? contactFound$ : contacts$) | async)!" [tableStyle]="{ 'min-width': '50rem' }">
+<p-table class="table" [value]="(((isContactFound ? contactFound() : contacts()))| async)!" [tableStyle]="{ 'min-width': '50rem' }">
 <ng-template pTemplate="header">
             <tr>
               <th></th>
