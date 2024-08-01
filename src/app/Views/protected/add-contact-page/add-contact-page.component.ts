@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import {Router} from "@angular/router";
+import {Component} from '@angular/core';
+import {RouterLink} from "@angular/router";
 import {Button} from "primeng/button";
 import {AddContactFormComponent} from "../../../Components/add-contact-form/add-contact-form.component";
 
@@ -8,15 +8,10 @@ import {AddContactFormComponent} from "../../../Components/add-contact-form/add-
   standalone: true,
   imports: [
     Button,
-    AddContactFormComponent
+    AddContactFormComponent,
+    RouterLink
   ],
   templateUrl: './add-contact-page.component.html',
   styleUrl: './add-contact-page.component.css'
 })
-export class AddContactPageComponent {
-  constructor(private router: Router) {}
-
-  goToBack() {
-    this.router.navigateByUrl('/contacts')
-  }
-}
+export class AddContactPageComponent {}

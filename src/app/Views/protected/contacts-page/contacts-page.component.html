@@ -9,5 +9,5 @@
     <app-contacts [contacts$]="contacts$" [(isReset)]="isReset"/>
   }
 
-  <p-button class="button-add-contact" icon="pi pi-plus" [rounded]="true" [raised]="true" (onClick)="goToAddContact()"/>
+  <p-button class="button-add-contact" icon="pi pi-plus" [rounded]="true" [raised]="true" routerLink="/contacts/add"/>
 </div>

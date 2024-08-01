@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {Button} from "primeng/button";
-import {Router} from "@angular/router";
+import {RouterLink} from "@angular/router";
 import {LoginFormComponent} from "../../../Components/login-form/login-form.component";
 
 @Component({
@@ -8,17 +8,10 @@ import {LoginFormComponent} from "../../../Components/login-form/login-form.comp
   standalone: true,
   imports: [
     Button,
-    LoginFormComponent
+    LoginFormComponent,
+    RouterLink
   ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'
 })
-export class LoginPageComponent {
-
-  constructor(private router: Router) {
-  }
-
-  goToRegisterForm() {
-    this.router.navigateByUrl('/register');
-  }
-}
+export class LoginPageComponent {}

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Button} from "primeng/button";
-import {Router} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {Observable, of} from "rxjs";
 import {ContactModel} from "../../../Models/contact.model";
 import {ContactService} from "../../../Services/contact.service";
@@ -15,7 +15,8 @@ import {AsyncPipe} from "@angular/common";
     Button,
     ContactsComponent,
     SearchBarComponent,
-    AsyncPipe
+    AsyncPipe,
+    RouterLink
   ],
   templateUrl: './contacts-page.component.html',
   styleUrl: './contacts-page.component.css'
@@ -43,9 +44,4 @@ export class ContactsPageComponent implements OnInit {
       contactFound
     ]);
     this.isReset = false;
-  }
-
-  goToAddContact(): void {
-    this.router.navigateByUrl('/contacts/add');
-  }
-}
+  }}
