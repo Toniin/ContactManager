@@ -1,5 +1,5 @@
 import {Component, EventEmitter, inject, Input, Output, WritableSignal} from '@angular/core';
-import {Observable, of, tap} from "rxjs";
+import {catchError, Observable, of, tap} from "rxjs";
 import {ContactService} from "../../Services/contact.service";
 import {ContactModel} from "../../Models/contact.model";
 import {AsyncPipe} from "@angular/common";
@@ -61,7 +61,7 @@ export class ContactsComponent {
     this.confirmationService.confirm({
       accept: () => {
         this.contactService.removeContact(phoneNumber).pipe(
-          tap(() => {
+          tap(async () => {
               this.messageService.add({
                 key: 'delete-contact',
                 severity: 'success',
@@ -74,7 +74,17 @@ export class ContactsComponent {
                 this.contacts.set(this.contactService.getContacts())
               }
             }
-          )
+          ),
+          catchError(async (error) => {
+            this.isSubmitting = false;
+            this.messageService.add({
+              key: 'delete-contact',
+              severity: 'error',
+              summary: `Contact deleted failed`,
+              detail: `You do not have permission`
+            })
+            return of([]);
+          })
         ).subscribe()
       }
     });
@@ -106,19 +116,28 @@ export class ContactsComponent {
     if (this.editContactForm.value.name.length === 0 || this.editContactForm.value.name === contact.name) {
       this.cancelEditing()
     } else {
+      this.isSubmitting = true;
+
       const newContact = {
         name: this.editContactForm.value.name,
         phoneNumber: contact.phoneNumber
       }
 
       this.contactService.updateContact(newContact).pipe(
-        tap(() => {
+        tap(async () => {
+          // Promise of 1s to show the loading button when form is submitting
+          await new Promise((resolve) => {
+            return setTimeout(() => {
+              resolve(true)
+            }, 1000)
+          })
           this.messageService.add({
             key: 'update-contact',
             severity: 'success',
             summary: `Contact updated successfully`,
             detail: `Contact with phone ${contact.phoneNumber} is updated`
           })
+          this.isSubmitting = false;
           this.cancelEditing()
 
           if (this.isContactFound) {
@@ -128,6 +147,22 @@ export class ContactsComponent {
           } else {
             this.contacts.set(this.contactService.getContacts())
           }
+        }),
+        catchError(async (error) => {
+          // Promise of 1s to show the loading button when form is submitting
+          await new Promise((resolve) => {
+            return setTimeout(() => {
+              resolve(true)
+            }, 1000)
+          })
+          this.isSubmitting = false;
+          this.messageService.add({
+            key: 'update-contact',
+            severity: 'error',
+            summary: `Contact updated failed`,
+            detail: `You do not have permission`
+          })
+          return of([]);
         })
       ).subscribe()
     }

@@ -23,6 +23,10 @@
     </div>
   </div>
 
+  @if (formError.isError) {
+    <p class="error-message">{{ formError.errorMessage }}</p>
+  }
+
   <p-button label="Register" [raised]="true" aria-label="Submit" (onClick)="onRegister()" [disabled]="isSubmitting"
             [loading]="isSubmitting"/>
 </form>

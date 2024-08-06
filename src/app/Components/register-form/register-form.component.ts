@@ -9,7 +9,7 @@ import {Router} from "@angular/router";
 import {PasswordModule} from "primeng/password";
 import {RadioButtonModule} from "primeng/radiobutton";
 import {UserService} from "../../Services/user.service";
-import {tap} from "rxjs";
+import {catchError, of, tap} from "rxjs";
 import {AuthService} from "../../Services/auth.service";
 
 @Component({
@@ -28,7 +28,7 @@ import {AuthService} from "../../Services/auth.service";
   templateUrl: './register-form.component.html',
   styleUrl: './register-form.component.css'
 })
-export class RegisterFormComponent implements OnInit{
+export class RegisterFormComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private userService = inject(UserService);
   private authService = inject(AuthService);
@@ -37,6 +37,7 @@ export class RegisterFormComponent implements OnInit{
   isSubmitting = false;
   inputUsernameError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
   inputPasswordError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
+  formError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
 
   registerForm: FormGroup = this.formBuilder.group({
     username: [null, Validators.required],
@@ -83,10 +84,36 @@ export class RegisterFormComponent implements OnInit{
     }
 
     if (this.registerForm.valid) {
+      this.isSubmitting = true;
       this.userService.createUser(this.registerForm.value).pipe(
-        tap(() => {
+        tap(async () => {
+          // Promise of 1s to show the loading button when form is submitting
+          await new Promise((resolve) => {
+            return setTimeout(() => {
+              resolve(true)
+            }, 1000)
+          })
+          this.isSubmitting = false;
+          this.formError = {
+            isError: false,
+            errorMessage: ""
+          }
           this.router.navigateByUrl('/login')
         }),
+        catchError(async (error) => {
+          // Promise of 1s to show the loading button when form is submitting
+          await new Promise((resolve) => {
+            return setTimeout(() => {
+              resolve(true)
+            }, 1000)
+          })
+          this.isSubmitting = false;
+          this.formError = {
+            isError: true,
+            errorMessage: error.error.message
+          }
+          return of([]);
+        })
       ).subscribe()
     }
   }

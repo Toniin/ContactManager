@@ -83,7 +83,14 @@ export class LoginFormComponent implements OnInit {
       this.isSubmitting = true;
 
       this.authService.loginUser(this.loginForm.value).pipe(
-        tap((user: responseLogin) => {
+        tap(async (user: responseLogin) => {
+          // Promise of 1s to show the loading button when form is submitting
+          await new Promise((resolve) => {
+            return setTimeout(() => {
+              resolve(true)
+            }, 1000)
+          })
+
           localStorage.setItem("Token", user.token);
 
           this.isSubmitting = false;
@@ -95,7 +102,13 @@ export class LoginFormComponent implements OnInit {
 
           this.router.navigateByUrl('/contacts')
         }),
-        catchError(() => {
+        catchError(async () => {
+          // Promise of 1s to show the loading button when form is submitting
+          await new Promise((resolve) => {
+            return setTimeout(() => {
+              resolve(true)
+            }, 1000)
+          })
           this.isSubmitting = false;
           this.responseError = {
             isError: true,

@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import {ContactService} from "../../Services/contact.service";
 import {catchError, of, tap} from "rxjs";
 import {AutoFocusModule} from "primeng/autofocus";
+import {ToastModule} from "primeng/toast";
 
 @Component({
   selector: 'app-add-contact-form',
@@ -17,9 +18,10 @@ import {AutoFocusModule} from "primeng/autofocus";
     InputNumberModule,
     ButtonModule,
     AutoFocusModule,
+    ToastModule,
   ],
   templateUrl: './add-contact-form.component.html',
-  styleUrl: './add-contact-form.component.css'
+  styleUrl: './add-contact-form.component.css',
 })
 export class AddContactFormComponent {
   private formBuilder = inject(FormBuilder);
@@ -69,7 +71,13 @@ export class AddContactFormComponent {
     if (this.newContactForm.valid) {
       this.isSubmitting = true;
       this.contactService.addNewContact(this.newContactForm.value).pipe(
-        tap(() => {
+        tap(async () => {
+            // Promise of 1s to show the loading button when form is submitting
+            await new Promise((resolve) => {
+              return setTimeout(() => {
+                resolve(true)
+              }, 1000)
+            })
             this.isSubmitting = false;
             this.responseError = {
               isError: false,
@@ -80,11 +88,18 @@ export class AddContactFormComponent {
             this.router.navigateByUrl('/contacts')
           }
         ),
-        catchError(() => {
+        catchError(async (error) => {
+          console.log(error)
+          // Promise of 1s to show the loading button when form is submitting
+          await new Promise((resolve) => {
+            return setTimeout(() => {
+              resolve(true)
+            }, 1000)
+          })
           this.isSubmitting = false;
           this.responseError = {
             isError: true,
-            errorMessage: "Not allowed."
+            errorMessage: "You do not have permission"
           }
           return of([]);
         })

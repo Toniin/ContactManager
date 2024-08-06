@@ -39,6 +39,6 @@ export class ContactService {
   }
 
   removeContact(phoneNumber: number) {
-    return this.http.delete(`${this.apiUrl}/delete/${phoneNumber}`, {responseType: 'text'})
+    return this.http.delete(`${this.apiUrl}/delete/${phoneNumber}`, {responseType: 'json'})
   }
 }

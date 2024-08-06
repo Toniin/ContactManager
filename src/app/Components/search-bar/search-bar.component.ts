@@ -44,7 +44,13 @@ export class SearchBarComponent {
       this.isSubmitting = true;
 
       this.contactService.getContact(this.getContactForm.value).pipe(
-        tap((contactFound) => {
+        tap(async (contactFound) => {
+            // Promise of 1s to show the loading button when form is submitting
+            await new Promise((resolve) => {
+              return setTimeout(() => {
+                resolve(true)
+              }, 1000)
+            })
             this.isSubmitting = false;
             this.responseError = {
               isError: false,
@@ -54,11 +60,17 @@ export class SearchBarComponent {
             this.emitContactFound(contactFound)
           }
         ),
-        catchError(() => {
+        catchError(async (error) => {
+          // Promise of 1s to show the loading button when form is submitting
+          await new Promise((resolve) => {
+            return setTimeout(() => {
+              resolve(true)
+            }, 1000)
+          })
           this.isSubmitting = false;
           this.responseError = {
             isError: true,
-            errorMessage: "Contact not found"
+            errorMessage: error.error.message
           }
           return of([]);
         })

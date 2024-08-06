@@ -9,10 +9,29 @@ import {ContactsPageComponent} from "./Views/protected/contacts-page/contacts-pa
 const appName = "ContactManager"
 
 export const routes: Routes = [
-  { path: '', redirectTo: "login", pathMatch: 'full' },
-  { path: 'login', component: LoginPageComponent, title: `Login - ${appName}` },
-  { path: 'register', component: RegisterPageComponent, title: `Register - ${appName}` },
-  { path: "contacts", component: ContactsPageComponent, canActivate: [AuthGuard], title: `Contacts - ${appName}`},
-  { path: "contacts/add", component: AddContactPageComponent, canActivate: [AuthGuard], title: `Add contact - ${appName}`},
-  { path: "**", component: ErrorPageComponent, title: `Not found - ${appName}` }
+  { path: '',
+    redirectTo: "login",
+    pathMatch: 'full'
+  },
+  { path: 'login',
+    component: LoginPageComponent,
+    title: `Login - ${appName}`
+  },
+  { path: 'register',
+    component: RegisterPageComponent,
+    title: `Register - ${appName}`
+  },
+  { path: "contacts",
+    component: ContactsPageComponent,
+    canActivate: [AuthGuard],
+    title: `Contacts - ${appName}`
+  },
+  { path: "contacts/add",
+    component: AddContactPageComponent,
+    canActivate: [AuthGuard],
+    title: `Add contact - ${appName}`
+  },
+  { path: "**",
+    component: ErrorPageComponent,
+    title: `Not found - ${appName}` }
 ];
