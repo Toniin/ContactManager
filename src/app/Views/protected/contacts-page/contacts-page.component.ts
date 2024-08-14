@@ -1,12 +1,12 @@
-import {Component, inject, signal, WritableSignal} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {Button} from "primeng/button";
 import {RouterLink} from "@angular/router";
-import {Observable, of} from "rxjs";
-import {ContactModel} from "../../../Models/contact.model";
-import {ContactService} from "../../../Services/contact.service";
 import {ContactsComponent} from "../../../Components/contacts/contacts.component";
 import {SearchBarComponent} from "../../../Components/search-bar/search-bar.component";
 import {AsyncPipe} from "@angular/common";
+import {Store} from "@ngrx/store";
+import {AppState} from "../../../store/app.state";
+import {getContacts} from "../../../store/contacts/contacts.actions";
 
 @Component({
   selector: 'app-contacts-page',
@@ -22,20 +22,11 @@ import {AsyncPipe} from "@angular/common";
   styleUrl: './contacts-page.component.css'
 })
 export class ContactsPageComponent {
-  private contactService = inject(ContactService);
+  private store = inject(Store<AppState>)
 
-  contacts = signal(this.contactService.getContacts())
-  contactFound!: WritableSignal<Observable<ContactModel[]>>;
-  isContactFound = false;
+  isContactFound$ = this.store.select(state => state.contacts.isContactFound);
 
-  resetContactFound() {
-    this.isContactFound = false
-  }
-
-  getContactFound(contactFound: ContactModel) {
-    this.contactFound = signal(of([
-      contactFound
-    ]));
-    this.isContactFound = true;
+  resetContacts() {
+    this.store.dispatch(getContacts())
   }
 }

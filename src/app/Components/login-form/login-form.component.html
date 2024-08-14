@@ -15,8 +15,8 @@
     }
   </div>
 
-  @if (responseError.isError) {
-    <p class="error-message">{{ responseError.errorMessage }}</p>
+  @if ((errors$ | async)?.isError) {
+    <p class="error-message">{{ (errors$ | async)?.message }}</p>
   }
 
   <p-button label="Login" [raised]="true" aria-label="Submit" (onClick)="onLogin()" [disabled]="isSubmitting"

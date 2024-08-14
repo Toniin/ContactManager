@@ -1,22 +1,30 @@
-import {Component, inject, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, inject, Input, OnChanges} from '@angular/core';
 import {ButtonModule} from "primeng/button";
-import {AuthService} from "../../Services/auth.service";
+import {Store} from "@ngrx/store";
+import {AppState} from "../../store/app.state";
+import {selectIsAuthenticated} from "../../store/user/user.selector";
+import {AsyncPipe} from "@angular/common";
+import {signOut} from "../../store/user/user.actions";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
     ButtonModule,
+    AsyncPipe,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnChanges {
-  private authService = inject(AuthService);
+  private store = inject(Store<AppState>);
+  private router = inject(Router)
 
   @Input() currentURI!: string;
   isAuthPaths: boolean = false;
-  isLoggedIn: boolean = this.authService.isLoggedIn();
+  isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  hasToken: boolean = localStorage.getItem("Token") ? true : false;
 
   ngOnChanges() {
     if (this.currentURI === '/login' || this.currentURI === '/register') {
@@ -27,6 +35,7 @@ export class HeaderComponent implements OnChanges {
   }
 
   logOut(): void {
-    this.authService.logOut()
+    this.store.dispatch(signOut())
+    this.router.navigateByUrl('/login');
   }
 }

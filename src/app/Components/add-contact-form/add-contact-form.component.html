@@ -9,8 +9,12 @@
 
   <div class="form-input">
     <label for="phoneNumber">Phone number</label>
-    <p-inputNumber id="phoneNumber" type="number" inputId="withoutgrouping" [useGrouping]="false"
-                   formControlName="phoneNumber"/>
+    <p-inputMask
+      id="phoneNumber"
+      mask="(+33)9 99 99 99 99"
+      formControlName="phoneNumber"
+      placeholder="(+33)1 23 45 67 89"
+      :autoClear="false"/>
     @if (inputPhoneNumberError.isError) {
       <p class="error-message">{{ inputPhoneNumberError.errorMessage }}</p>
     }

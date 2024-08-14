@@ -1,16 +1,23 @@
 <div class="container">
   <form class="searchbar-form" [formGroup]="getContactForm" (keydown.enter)="onSubmit()">
     <label for="phoneNumber">Search contact</label>
-    <p-inputGroup>
-      <input id="phoneNumber" type="number" pInputText placeholder="Phone number" formControlName="phoneNumber"/>
-      @if (getContactForm.controls["phoneNumber"].value === null || isSubmitting) {
-        <button type="button" pButton icon="pi pi-search" class="p-button" aria-label="Submit" (click)="onSubmit()" [disabled]="true" [loading]="isSubmitting"></button>
+    <div>
+      <p-inputMask
+        id="phoneNumber"
+        mask="(+33)9 99 99 99 99"
+        formControlName="phoneNumber"
+        placeholder="(+33)1 23 45 67 89"
+        :autoClear="false"/>
+      @if (!phoneValidator_FR_fr(getContactForm.controls["phoneNumber"].value) || isSubmitting) {
+        <button type="submit" pButton icon="pi pi-search" class="p-button searchbar-button" aria-label="Submit"
+                (click)="onSubmit()"
+                [disabled]="true" [loading]="isSubmitting"></button>
       } @else {
-        <button type="button" pButton icon="pi pi-search" class="p-button" aria-label="Submit" (click)="onSubmit()"></button>
+        <button type="submit" pButton icon="pi pi-search" class="p-button searchbar-button" aria-label="Submit"
+                (click)="onSubmit()"></button>
       }
-    </p-inputGroup>
+    </div>
   </form>
-  @if (responseError.isError) {
-    <p class="error-message">{{ responseError.errorMessage }}</p>
-  }
+
+  <p-toast key="errorFound-contact" position="bottom-right"></p-toast>
 </div>

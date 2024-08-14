@@ -1,4 +1,4 @@
 export class ContactModel {
-  phoneNumber!: number
+  phoneNumber!: string
   name!: string
 }

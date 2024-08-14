@@ -1,5 +1,5 @@
-export class UserModel {
-  username!: string;
-  password!: string;
-  role!: string;
+export interface userState {
+  username: string,
+  isAuthenticated: boolean,
+  errors: { isError: boolean, message: string },
 }

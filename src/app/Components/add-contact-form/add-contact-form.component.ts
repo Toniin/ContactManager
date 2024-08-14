@@ -8,6 +8,8 @@ import {ContactService} from "../../Services/contact.service";
 import {catchError, of, tap} from "rxjs";
 import {AutoFocusModule} from "primeng/autofocus";
 import {ToastModule} from "primeng/toast";
+import { InputMaskModule } from 'primeng/inputmask';
+import {phoneValidator_FR_fr} from "../../../utils/phone.validator";
 
 @Component({
   selector: 'app-add-contact-form',
@@ -19,6 +21,7 @@ import {ToastModule} from "primeng/toast";
     ButtonModule,
     AutoFocusModule,
     ToastModule,
+    InputMaskModule
   ],
   templateUrl: './add-contact-form.component.html',
   styleUrl: './add-contact-form.component.css',
@@ -41,6 +44,14 @@ export class AddContactFormComponent {
   onSubmit() {
     const nameInput = document.querySelector('#name')
     const phoneNumberInput = document.querySelector('#phoneNumber')
+
+    if (!phoneValidator_FR_fr(this.newContactForm.value.phoneNumber)) {
+      this.inputPhoneNumberError = {
+        isError: true,
+        errorMessage: "Please enter phone number"
+      }
+      return;
+    }
 
     if (this.newContactForm.value.name === null || this.newContactForm.value.name.length === 0) {
       nameInput!.classList.add("ng-invalid", "ng-dirty")
@@ -78,6 +89,7 @@ export class AddContactFormComponent {
                 resolve(true)
               }, 1000)
             })
+
             this.isSubmitting = false;
             this.responseError = {
               isError: false,
@@ -89,13 +101,13 @@ export class AddContactFormComponent {
           }
         ),
         catchError(async (error) => {
-          console.log(error)
           // Promise of 1s to show the loading button when form is submitting
           await new Promise((resolve) => {
             return setTimeout(() => {
               resolve(true)
             }, 1000)
           })
+
           this.isSubmitting = false;
           this.responseError = {
             isError: true,

@@ -1,47 +1,33 @@
-import {Injectable} from "@angular/core";
+import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Router} from "@angular/router";
 import {responseLogin} from "../Models/types";
 import {environnement} from "../../Environnements/environnement";
+import {SignInForm, SignUpForm} from "../Models/forms.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private apiUrl: string = environnement.apiUrl
-  private authenticated = false;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient, private router: Router) {}
+  signUp(formData: SignUpForm): Observable<SignUpForm> {
+    return this.http.post<SignUpForm>(`${this.apiUrl}/auth/register`, formData)
+  }
 
-  loginUser(formData: {
-    username: string;
-    password: string;
-  }): Observable<responseLogin> {
-    this.authenticated = true;
+  signIn(formData: SignInForm): Observable<responseLogin> {
     return this.http.post<responseLogin>(`${this.apiUrl}/auth/login`, formData)
   }
 
-  logOut(): void {
-    this.authenticated = false;
-    localStorage.clear();
-    this.router.navigateByUrl('/login');
-  }
+  isAuthenticated() {
+    const isAuthenticated = localStorage.getItem("isAuthenticated")
+    const hasToken = localStorage.getItem("Token")
 
-  isLoggedIn(): boolean {
-    if (this.authenticated || this.hasToken()) {
+    if (isAuthenticated || hasToken) {
       return true
     } else {
       return false
     }
-  }
-
-  hasToken():boolean {
-    let token = localStorage.getItem("Token");
-
-    if (token === null) {
-      return false;
-    }
-    return true;
   }
 }

@@ -1,9 +1,9 @@
-import {inject, Injectable, Signal} from "@angular/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {inject, Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {ContactModel} from "../Models/contact.model";
 import {environnement} from "../../Environnements/environnement";
-import {toSignal} from "@angular/core/rxjs-interop";
+import {phoneFormatInternational_FR_fr} from "../../utils/phone.validator";
 
 @Injectable({
   providedIn: 'root'
@@ -16,29 +16,21 @@ export class ContactService {
     return this.http.get<ContactModel[]>(`${this.apiUrl}`)
   }
 
-  getContact(formData: {
-    phoneNumber: number;
-  }): Observable<ContactModel> {
-    return this.http.get<ContactModel>(`${this.apiUrl}/find/${formData.phoneNumber}`)
+  getContact(phoneNumber: string): Observable<ContactModel> {
+    return this.http.get<ContactModel>(`${this.apiUrl}/find/${phoneNumber}`)
   }
 
-  addNewContact(formData: {
-    name: string;
-    phoneNumber: number;
-  }): Observable<ContactModel> {
-    return this.http.post<ContactModel>(`${this.apiUrl}/add`, formData)
+  addNewContact(newContact: ContactModel): Observable<ContactModel> {
+    return this.http.post<ContactModel>(`${this.apiUrl}/add`, newContact)
   }
 
-  updateContact(newContact: ContactModel): Observable<ContactModel> {
-    const contactToUpdate = {
-      "name": newContact.name,
-      "phoneNumber": newContact.phoneNumber,
-    }
-
-    return this.http.put<ContactModel>(`${this.apiUrl}/update/${newContact.phoneNumber}`, contactToUpdate)
+  updateContact(contactUpdated: ContactModel): Observable<ContactModel> {
+    return this.http.put<ContactModel>(`${this.apiUrl}/update/${contactUpdated.phoneNumber}`, contactUpdated)
   }
 
-  removeContact(phoneNumber: number) {
-    return this.http.delete(`${this.apiUrl}/delete/${phoneNumber}`, {responseType: 'json'})
+  deleteContact(phoneNumber: string) {
+    const phone = phoneFormatInternational_FR_fr(phoneNumber)
+
+    return this.http.delete(`${this.apiUrl}/delete/${phone}`, {responseType: 'json'})
   }
 }

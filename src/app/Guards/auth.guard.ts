@@ -5,9 +5,9 @@ import {AuthService} from "../Services/auth.service";
 // Functional guard
 export const AuthGuard = () => {
   const router = inject(Router);
-  const authService = inject(AuthService);
+  const authService = inject(AuthService)
 
-  if (authService.isLoggedIn()) {
+  if (authService.isAuthenticated()) {
     return true
   }
 

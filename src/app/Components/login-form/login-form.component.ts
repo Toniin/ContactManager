@@ -7,9 +7,14 @@ import {PasswordModule} from "primeng/password";
 import {RadioButtonModule} from "primeng/radiobutton";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
-import {catchError, of, tap} from "rxjs";
+import {ToastModule} from "primeng/toast";
+import {selectUserErrors} from "../../store/user/user.selector";
+import {Store} from "@ngrx/store";
+import {AppState} from "../../store/app.state";
+import {signIn} from "../../store/user/user.actions";
+import {lastValueFrom, take} from "rxjs";
+import {AsyncPipe} from "@angular/common";
 import {AuthService} from "../../Services/auth.service";
-import {responseLogin} from "../../Models/types";
 
 @Component({
   selector: 'app-login-form',
@@ -21,33 +26,37 @@ import {responseLogin} from "../../Models/types";
     PaginatorModule,
     PasswordModule,
     RadioButtonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ToastModule,
+    AsyncPipe
   ],
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.css'
 })
 export class LoginFormComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
-  private authService = inject(AuthService);
   private router = inject(Router);
+  private store = inject(Store<AppState>)
+  private authService = inject(AuthService)
 
   isSubmitting = false;
   inputUsernameError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
   inputPasswordError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
-  responseError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
+
+  errors$ = this.store.select(selectUserErrors);
 
   loginForm: FormGroup = this.formBuilder.group({
     username: [null, Validators.required],
     password: [null, Validators.required],
   })
 
-  ngOnInit() {
-    if (this.authService.isLoggedIn()) {
+  async ngOnInit() {
+    if (this.authService.isAuthenticated()) {
       this.router.navigateByUrl('/contacts');
     }
   }
 
-  onLogin(): void {
+  async onLogin() {
     const usernameInput = document.querySelector('#username')
     const passwordInput = document.querySelector('#password')
 
@@ -82,41 +91,22 @@ export class LoginFormComponent implements OnInit {
     if (this.loginForm.valid) {
       this.isSubmitting = true;
 
-      this.authService.loginUser(this.loginForm.value).pipe(
-        tap(async (user: responseLogin) => {
-          // Promise of 1s to show the loading button when form is submitting
-          await new Promise((resolve) => {
-            return setTimeout(() => {
-              resolve(true)
-            }, 1000)
-          })
+      // Promise of 1s to show the loading button when form is submitting
+      await new Promise((resolve) => {
+        return setTimeout(() => {
+          resolve(true)
+        }, 1000)
+      })
 
-          localStorage.setItem("Token", user.token);
+      this.store.dispatch(signIn(this.loginForm.value))
+      this.isSubmitting = false;
 
-          this.isSubmitting = false;
-          this.responseError = {
-            isError: false,
-            errorMessage: ""
-          }
-          this.loginForm.reset()
+      const errors = await lastValueFrom(this.errors$.pipe(take(2)));
 
-          this.router.navigateByUrl('/contacts')
-        }),
-        catchError(async () => {
-          // Promise of 1s to show the loading button when form is submitting
-          await new Promise((resolve) => {
-            return setTimeout(() => {
-              resolve(true)
-            }, 1000)
-          })
-          this.isSubmitting = false;
-          this.responseError = {
-            isError: true,
-            errorMessage: "Incorrect username or password."
-          }
-          return of([]);
-        })
-      ).subscribe()
+      if (!errors.isError) {
+        this.loginForm.reset()
+        this.router.navigateByUrl('/contacts')
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-<p-table class="table" [value]="(((isContactFound ? contactFound() : contacts()))| async)!"
+<p-table class="table" [value]="(contacts$| async)!"
          [tableStyle]="{ 'min-width': '50rem' }">
   <ng-template pTemplate="header">
     <tr>
@@ -19,15 +19,15 @@
       </td>
       <td class="td-phone">{{ contact.phoneNumber }}</td>
 
-      @if (isEditingContact.isEditing && contact.phoneNumber === isEditingContact.phoneNumber) {
+      @if (onContact.isEditing && contact.phoneNumber === onContact.phoneNumber) {
         <td>
           <form class="form-edit-contact" [formGroup]="editContactForm"
-                (keydown.enter)="onEditContactSubmit(contact)">
+                (keydown.enter)="onSubmitEditedContact(contact)">
             <label for="contactName" hidden="hidden">Name</label>
             <p-inputGroup class="input-with-button">
               <input id="contactName" type="text" pInputText pAutoFocus [autofocus]="true" formControlName="name"/>
               <button label="Save" type="button" pButton class="p-button" aria-label="Submit"
-                      (click)="onEditContactSubmit(contact)" [disabled]="isSubmitting"
+                      (click)="onSubmitEditedContact(contact)" [disabled]="isSubmitting"
                       [loading]="isSubmitting"></button>
             </p-inputGroup>
           </form>
@@ -42,14 +42,15 @@
         <td>
           <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [outlined]="true" [raised]="true"
                     severity="secondary"
-                    (onClick)="editContact(contact)"/>
+                    (onClick)="onEditContact(contact)"/>
         </td>
       }
 
       <td>
         <p-button icon="pi pi-trash" [rounded]="true" [text]="true" [outlined]="true" [raised]="true"
                   severity="danger"
-                  (onClick)="removeContact(contact.phoneNumber)"/>
+                  (onClick)="deleteContact(contact.phoneNumber)" [disabled]="isSubmitting && contact.phoneNumber === onContact.phoneNumber"
+                  [loading]="isSubmitting && contact.phoneNumber === onContact.phoneNumber"/>
       </td>
     </tr>
   </ng-template>

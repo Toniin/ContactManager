@@ -1,12 +1,18 @@
-import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {InputTextModule} from "primeng/inputtext";
 import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {Button, ButtonDirective} from "primeng/button";
 import {InputGroupModule} from "primeng/inputgroup";
-import {ContactService} from "../../Services/contact.service";
-import {catchError, of, tap} from "rxjs";
-import {ContactModel} from "../../Models/contact.model";
-import {NgClass, NgIf} from "@angular/common";
+import {InputMaskModule} from 'primeng/inputmask';
+import {phoneFormatLocal_FR_fr, phoneValidator_FR_fr} from "../../../utils/phone.validator";
+import {Store} from "@ngrx/store";
+import {AppState} from "../../store/app.state";
+import {getContact} from "../../store/contacts/contacts.actions";
+import {selectContactsErrors} from "../../store/contacts/contacts.selector";
+import {AsyncPipe} from "@angular/common";
+import {ToastModule} from "primeng/toast";
+import {MessageService} from "primeng/api";
+import { interval, take, lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-search-bar',
@@ -17,64 +23,52 @@ import {NgClass, NgIf} from "@angular/common";
     ReactiveFormsModule,
     ButtonDirective,
     Button,
-    NgIf,
-    NgClass
+    InputMaskModule,
+    AsyncPipe,
+    ToastModule,
   ],
+  providers: [MessageService],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.css'
 })
 export class SearchBarComponent {
   private formBuilder = inject(FormBuilder);
-  private contactService = inject(ContactService);
-
-  isSubmitting = false;
-  @Output() contactFound: EventEmitter<ContactModel> = new EventEmitter();
-  responseError: { isError: boolean, errorMessage: string } = {isError: false, errorMessage: ""}
+  private store = inject(Store<AppState>)
+  private messageService = inject(MessageService);
 
   getContactForm: FormGroup = this.formBuilder.group({
     phoneNumber: [null],
   });
 
-  emitContactFound(contactFound: ContactModel) {
-    this.contactFound.emit(contactFound);
-  }
+  errors$ = this.store.select(selectContactsErrors);
+  isSubmitting = false;
 
-  onSubmit() {
+  async onSubmit() {
     if (this.getContactForm.valid) {
+      const phoneNumber = this.getContactForm.value.phoneNumber
       this.isSubmitting = true;
 
-      this.contactService.getContact(this.getContactForm.value).pipe(
-        tap(async (contactFound) => {
-            // Promise of 1s to show the loading button when form is submitting
-            await new Promise((resolve) => {
-              return setTimeout(() => {
-                resolve(true)
-              }, 1000)
-            })
-            this.isSubmitting = false;
-            this.responseError = {
-              isError: false,
-              errorMessage: ""
-            }
-            this.getContactForm.reset()
-            this.emitContactFound(contactFound)
-          }
-        ),
-        catchError(async (error) => {
-          // Promise of 1s to show the loading button when form is submitting
-          await new Promise((resolve) => {
-            return setTimeout(() => {
-              resolve(true)
-            }, 1000)
-          })
-          this.isSubmitting = false;
-          this.responseError = {
-            isError: true,
-            errorMessage: error.error.message
-          }
-          return of([]);
-        })
-      ).subscribe()
+      // Promise of 1s to show the loading button when form is submitting
+      await new Promise((resolve) => {
+        return setTimeout(() => {
+          resolve(true)
+        }, 1000)
+      })
+
+      this.store.dispatch(getContact(phoneNumber))
+      this.isSubmitting = false;
+
+      const errors = await lastValueFrom(this.errors$.pipe(take(2)));
+
+      this.messageService.clear('errorFound-contact');
+      this.messageService.add({
+        key: 'errorFound-contact',
+        severity: 'error',
+        summary: errors.message,
+        detail: `Contact with phone ${phoneFormatLocal_FR_fr(phoneNumber)} is not found`
+      })
     }
   }
+
+  protected readonly phoneValidator_FR_fr = phoneValidator_FR_fr;
 }
