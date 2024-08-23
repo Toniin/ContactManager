@@ -1,5 +1,5 @@
 ### STAGE 1: ###
-FROM node:14.17.0-alpine as build
+FROM node:alpine3.20 as build
 WORKDIR /usr/src/app
 COPY package.json ./
 RUN npm install
@@ -7,6 +7,6 @@ COPY . .
 RUN npm run build
 
 ### STAGE 2: ###
-FROM nginx:1.17.1-alpine
+FROM nginx:1.27.1-alpine3.20-slim
 COPY --from=build /usr/src/app/dist/contact-manager /usr/share/nginx/html
 EXPOSE 80
