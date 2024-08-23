@@ -4,9 +4,10 @@ WORKDIR /usr/src/app
 COPY package.json ./
 RUN npm install
 COPY . .
+RUN npm install -g @angular/cli
 RUN npm run build
 EXPOSE 4200
-CMD ["npm", "start"]
+CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
 
 ### STAGE 2: ###
 # FROM nginx:1.27.1-alpine3.20-slim
