@@ -2,14 +2,14 @@ import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {responseLogin} from "../Models/types";
-import {environnement} from "../../Environnements/environnement";
+import {environment} from "../../Environments/environment";
 import {SignInForm, SignUpForm} from "../Models/forms.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl: string = environnement.apiUrl
+  private apiUrl: string = environment.API_URL;
   private http = inject(HttpClient);
 
   signUp(formData: SignUpForm): Observable<SignUpForm> {

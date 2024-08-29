@@ -2,14 +2,14 @@ import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {ContactModel} from "../Models/contact.model";
-import {environnement} from "../../Environnements/environnement";
+import {environment} from "../../Environments/environment";
 import {phoneFormatInternational_FR_fr} from "../../utils/phone.validator";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContactService {
-  private apiUrl: string = environnement.apiUrl
+  private apiUrl: string = environment.API_URL
   private http = inject(HttpClient);
 
   getContacts(): Observable<ContactModel[]> {
