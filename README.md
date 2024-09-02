@@ -1,6 +1,8 @@
 # Contact manager (Angular)
 Web app in Angular
 
+Docker image of the project : <a href="https://hub.docker.com/r/toniin/contact-manager-angular" target="_blank">toniin/contact-manager-angular</a>
+
 ## Clone the application
 
 ```bash
