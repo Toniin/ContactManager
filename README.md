@@ -17,7 +17,7 @@ git clone https://github.com/Toniin/ContactManager.git
 ## Install dependencies using npm
 
 ```bash
-npm run install
+npm install
 ```
 
 ## Build and run the app using npm
